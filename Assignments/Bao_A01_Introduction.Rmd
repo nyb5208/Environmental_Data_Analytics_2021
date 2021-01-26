@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: "Nancy Bao"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -22,21 +22,21 @@ The completed exercise is due on <>.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer: I have some experience doing ANOVA in R from my undergraduate (2 years ago). I also have some experience with data analytics and R Studio after taking ENV710 in the Fall 2019 Semester with Prof. Betsy Albright. I do not have any experience with Git.
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: I am confident in data exploration and data visualization. 
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: I am apprehensive about time series, spatial visualization and analysis (I have little experience with GIS. I only worked with ArcMap). 
 
 
-## 2) GitHub
+## 2) GitHub 
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository  and that you have updated your course README file. 
 
-> Answer: 
+> Answer: https://github.com/nyb5208/Environmental_Data_Analytics_2021.git
 
 
