@@ -92,7 +92,8 @@ test_score_pass_check<- function(x) {
 #so for grades lower than 50, function prints FALSE (student failed the test)
 #for anything else (50 and above),function prints TRUE (student passed the test).
 }
-test_score_pass_check(Test_scores_outof100) 
+test_score_pass_check(Test_scores_outof100)
+#My input to function is my Test_scores_outof100 numeric vector
 #In this case, only one grade was FALSE. 
 #To check the specific student and score that did not pass:
 #I know the output was the second component (so second row) in the data frame
