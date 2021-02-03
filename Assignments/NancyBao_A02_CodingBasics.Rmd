@@ -65,7 +65,8 @@ seqbyfour_mean>seqbyfour_median
 Student_names<-c("Robert","Eda","Emily","Zachary") #Student_names is a character vector
 Test_scores_outof100<-c(98,48,85,50) #Test_scores_outof100 is a numeric vector
 test_scores_pass50<-c(TRUE,FALSE,TRUE,TRUE) #test_scores_pass50 is a logical vector
-#
+#test_scores_pass50 vector shows TRUE (test score is 50 or above) 
+#test_scores_pass50 vector shows FALSE (test score<50)
 #7.Combined the vectors into a data frame. I named the dataframe,"TestResults_df".
 TestResults_df<-data.frame("Student.Name"=Student_names,
                            "Test.Score.outof100"=Test_scores_outof100,
