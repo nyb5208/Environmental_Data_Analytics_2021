@@ -32,19 +32,20 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r}
 #1. 
-seqbyfour<-seq(1,100,4) # I used the seq(start#, to#, by#) function to generate a sequence from 1 and ending at 100, 
-#specified with increments of four. 
+seqbyfour<-seq(1,100,4) # I used the seq(start#, to#, by#) function 
+#this specifies a sequence of 1 to 100, counting by fours. 
 seqbyfour #I named the sequence "seqbyfour" and I am calling it in this line.
 #2. 
 seqbyfour_mean<-mean(seqbyfour) # I used mean() of the sequence, "seqbyfour". 
-#I created an object for the mean and specified the name of the value as seqbyfour_mean.
+#I created an object for the mean and specified the name of object as seqbyfour_mean.
 seqbyfour_mean #calling the mean in this line. 
 #The mean of the seqbyfour sequence is 49. 
 seqbyfour_median<-median(seqbyfour) # I used median() on "seqbyfour" to find the median. 
-#I made an object for the median and specified name of the median value as seqbyfour_median. 
+#Made an object for the median and specified name of the object as seqbyfour_median. 
 seqbyfour_median #calling the median in this line. The median is 49 for this sequence. 
 #3. 
-seqbyfour_mean>seqbyfour_median #I used the `>` conditional statement on the mean and median objects 
+seqbyfour_mean>seqbyfour_median 
+#I used the `>` conditional statement on the mean and median objects 
 #The answer returned is FALSE. 
 #So, the mean is not greater than the median. 
 #We can confirm this as the mean value equals the median value, which is 49. 
@@ -82,19 +83,20 @@ TestResults_df #calling the data frame in this line
 11. Apply your function to the vector with test scores that you created in number 5. 
 
 ```{r}
+#For question 10:
 #test_pass_check function is used to check if test score passes or fails
 # a grade of 50 or higher (out of 100) outputs as TRUE, meaning student's score passed
 #below 50 outputs as FALSE, meaning student's score did not pass
 test_score_pass_check<- function(x) {
  print(ifelse(x<50,"FALSE","TRUE")) # my logical expression is x<50, 
-#so for grades lower than 50, function prints FALSE (meaning the student failed the test)
-#for anything else (50 and above),function prints TRUE (meaning the student passed the test).
+#so for grades lower than 50, function prints FALSE (student failed the test)
+#for anything else (50 and above),function prints TRUE (student passed the test).
 }
 test_score_pass_check(Test_scores_outof100) 
 #In this case, only one grade was FALSE. 
 #To check the specific student and score that did not pass:
 #I know the output was the second component (so second row) in the data frame
-#Using TestResults_df[2,], which we learned in lab, I know Eda did not pass with score of 48. 
+#Using TestResults_df[2,],learned in lab, I know Eda did not pass with score of 48. 
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
