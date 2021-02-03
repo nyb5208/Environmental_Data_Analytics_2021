@@ -33,14 +33,14 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 ```{r}
 #1. 
 seqbyfour<-seq(1,100,4) # I used the seq(start#, to#, by#) function to generate a sequence of numbers starting from 1 and ending at 100, and specified with increments of four. 
-seqbyfour #I named the sequence "seqbyfour" and calling it in this line.
+seqbyfour #I named the sequence "seqbyfour" and I am calling it in this line.
 #2. 
 seqbyfour_mean<-mean(seqbyfour) # I used mean() of the sequence, "seqbyfour". I created an object for the mean and specified the name of the value as seqbyfour_mean.
 seqbyfour_mean #calling the mean in this line. The mean of the seqbyfour sequence is 49. 
 seqbyfour_median<-median(seqbyfour) # I used median() on "seqbyfour" to find the median. I an object for the median and specified name of the median value as seqbyfour_median. 
 seqbyfour_median #calling the median in this line. The median is 49 for this sequence. 
 #3. 
-seqbyfour_mean>seqbyfour_median #I used the conditional statement on the objects I created to determine if the mean was greater than the median of the seqbyfour sequence. The answer returned is FALSE. So, the mean is not greater than the median. We can confirm this as the mean value = median value =49. 
+seqbyfour_mean>seqbyfour_median #I used the conditional statement on the objects I created to determine if the mean was greater than the median of the seqbyfour sequence. The answer returned is FALSE. So, the mean is not greater than the median. We can confirm this as the mean value equals the median value, which is 49. 
 #4 The comments (preceded by `#`) detailing reasoning/steps taken, are annotated after the code portion in each question.   
 ```
 
@@ -55,24 +55,35 @@ seqbyfour_mean>seqbyfour_median #I used the conditional statement on the objects
 8. Label the columns of your data frame with informative titles.
 
 ```{r}
-Student_names<-c("Robert","Luna","Emily","Zachary")
-Test_scores_outof100<-c(98,48,85,79)
-test_scores_pass50<-c(TRUE,FALSE,TRUE,TRUE)
-#Combine the vectors into a data frame
+Student_names<-c("Robert","Eda","Emily","Zachary") #Student_names is a character vector
+Test_scores_outof100<-c(98,48,85,50) #Test_scores_outof100 is a numeric vector
+test_scores_pass50<-c(TRUE,FALSE,TRUE,TRUE) #test_scores_pass50 is a logical vector
+#
+#7.Combined the vectors into a data frame. I named the dataframe,"TestResults_df".
+TestResults_df<-data.frame("Student.Name"=Student_names,"Test.Score.outof100"=Test_scores_outof100,"Passed.test.with.score.of.50.or.higher"=test_scores_pass50) #I gave the columns informative titles. 
+TestResults_df
 ```
 
 9. QUESTION: How is this data frame different from a matrix?
 
-> Answer: 
+> Answer: This data frame is different from a matrix because a matrix contains row and column vectors of the same element types (e.g only numeric or only character) where as a dataframe is more diverse in which you can combine different types of vectors into a table (e.g. you can have numeric and character types of data). This dataframe has three different types of data: character, numeric, and logical. 
 
 10. Create a function with an if/else statement. Your function should determine whether a test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. Hint: Use `print`, not `return`. The name of your function should be informative.
 
 11. Apply your function to the vector with test scores that you created in number 5. 
 
 ```{r}
-
+test_score_pass_check<- function(x) {
+ print(ifelse(x<50,"FALSE","TRUE")) # my logical expression is x<50, so for grades lower than 50, I want the function to print FALSE (meaning the student failed the test) and for anything else (50 and above), I want the function to print TRUE (meaning the student passed the test).
+}
+test_score_pass_check(Test_scores_outof100) #test_pass_check function is used to check whether the student's test score is considered passing, which is a grade of 50 or higher (out of 100) and outputs as TRUE or failing, which is below 50 and outputs as FALSE. In this case, only one grade was FALSE. 
+#To check the specific student and score that did not pass, I know the output was the second component (so second row) in the data frame, so I can call it with this function: TestResults_df[2,], which we learned in lab. 
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer: 
+> Answer: The ifelse option worked. When I tried doing the if and else function, I got this message in return, "the condition has length >1 and only the first element will be used," which means that the function wasn't able to run all my components in the Test_scores_outof100 vector. My vector is greater than one in length (I had 4 test results); so, I knew then that I needed to use the ifelse option. At first, I tried to input ifelse(x<50,print("FALSE"),print("TRUE")) and that resulted in an output: 
+[1] "FALSE"
+[1] "TRUE"
+[1] "TRUE"  "FALSE" "TRUE"  "TRUE"  
+I did not want that so I tried and nested the ifelse statement inside the print function to get the ifelse function to work so that my output was just: [1] "TRUE"  "FALSE" "TRUE"  "TRUE". 
