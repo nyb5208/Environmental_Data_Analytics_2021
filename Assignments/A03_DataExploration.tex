@@ -1,0 +1,862 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+  \usepackage{amssymb}
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Assignment 3: Data Exploration},
+  pdfauthor={Nancy Bao},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=2.54cm]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Assignment 3: Data Exploration}
+\author{Nancy Bao}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{overview}{%
+\subsection{OVERVIEW}\label{overview}}
+
+This exercise accompanies the lessons in Environmental Data Analytics on
+Data Exploration.
+
+\hypertarget{directions}{%
+\subsection{Directions}\label{directions}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Change ``Student Name'' on line 3 (above) with your name.
+\item
+  Work through the steps, \textbf{creating code and output} that fulfill
+  each instruction.
+\item
+  Be sure to \textbf{answer the questions} in this assignment document.
+\item
+  When you have completed the assignment, \textbf{Knit} the text and
+  code into a single PDF file.
+\item
+  After Knitting, submit the completed exercise (PDF file) to the
+  dropbox in Sakai. Add your last name into the file name (e.g.,
+  ``Salk\_A03\_DataExploration.Rmd'') prior to submission.
+\end{enumerate}
+
+The completed exercise is due on \textless\textgreater.
+
+\hypertarget{set-up-your-r-session}{%
+\subsection{Set up your R session}\label{set-up-your-r-session}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Check your working directory, load necessary packages (tidyverse), and
+  upload two datasets: the ECOTOX neonicotinoid dataset
+  (ECOTOX\_Neonicotinoids\_Insects\_raw.csv) and the Niwot Ridge NEON
+  dataset for litter and woody debris
+  (NEON\_NIWO\_Litter\_massdata\_2018-08\_raw.csv). Name these datasets
+  ``Neonics'' and ``Litter'', respectively.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Set/Check working directory}
+\FunctionTok{getwd}\NormalTok{() }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "/Users/Nancy/Desktop/Semester 4/ENV 872L/Environmental_Data_Analytics_2021"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#my working directory was already set to the:}
+\CommentTok{\#"/Users/Nancy/Desktop/Semester 4/ENV 872L/Environmental\_Data\_Analytics\_2021"}
+
+\CommentTok{\#Load packages}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{\#Set relative file path for Neonics}
+\NormalTok{Neonics}\OtherTok{\textless{}{-}}\FunctionTok{read.csv}\NormalTok{(}\StringTok{"./Data/Raw/ECOTOX\_Neonicotinoids\_Insects\_raw.csv"}\NormalTok{,}\AttributeTok{stringsAsFactors=}\NormalTok{T)}
+\CommentTok{\#need to set stringsAsFactors=T to summarize character variables}
+
+\CommentTok{\#Set relative file path for Litter}
+\NormalTok{Litter}\OtherTok{\textless{}{-}}\FunctionTok{read.csv}\NormalTok{(}\StringTok{"./Data/Raw/NEON\_NIWO\_Litter\_massdata\_2018{-}08\_raw.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{learn-about-your-system}{%
+\subsection{Learn about your system}\label{learn-about-your-system}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  The neonicotinoid dataset was collected from the Environmental
+  Protection Agency's ECOTOX Knowledgebase, a database for ecotoxicology
+  research. Neonicotinoids are a class of insecticides used widely in
+  agriculture. The dataset that has been pulled includes all studies
+  published on insects. Why might we be interested in the ecotoxicology
+  of neonicotinoids on insects? Feel free to do a brief internet search
+  if you feel you need more background information.
+\end{enumerate}
+
+\begin{quote}
+Answer: Ecotoxicology of neonicotinoids on insects is important for
+understanding the acute and chronic adverse effects that these
+pesticides may have on beneficial insects in our ecosystem like
+honeybees. Through my courses in ecotoxicology and environmental
+toxicology at Duke, these pesticides are detrimental to the growth and
+development of many insect species, which are consequential to higher
+order trophic levels that depend on honeybee pollination and consumption
+for survival.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  The Niwot Ridge litter and woody debris dataset was collected from the
+  National Ecological Observatory Network, which collectively includes
+  81 aquatic and terrestrial sites across 20 ecoclimatic domains. 32 of
+  these sites sample forest litter and woody debris, and we will focus
+  on the Niwot Ridge long-term ecological research (LTER) station in
+  Colorado. Why might we be interested in studying litter and woody
+  debris that falls to the ground in forests? Feel free to do a brief
+  internet search if you feel you need more background information.
+\end{enumerate}
+
+\begin{quote}
+Answer: Litter and woody debris are critical nutritional components to
+the forest floor. Through my undergraduate research in soil science,
+plant nutrient, and dendrology,I learned that the organic matter, slowly
+released from the lignin, cellulose, and polyphenolic compounds are
+critical food sources and habitats for microbes, fungi, and other
+organisms in the aquatic and terrestrial ecosystems. Tracking the
+thickness and components that make up the litter and woody debris are
+ways to gauge forest and soil health in forest ecosystem management. My
+research was focused on N and C cycling, which is strongly driven by
+microbial breakdown and natural inputs of these nutrients from decaying
+plant matter.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  How is litter and woody debris sampled as part of the NEON network?
+  Read the NEON\_Litterfall\_UserGuide.pdf document to learn more. List
+  three pieces of salient information about the sampling methods here:
+\end{enumerate}
+
+\begin{quote}
+Answer: The following pieces of information were obtained from the
+NEON\_Litterfall\_UserGuide.pdf: * Litter and woody debris were sampled
+from pairs of ground traps (sampled once a year;used for woody debris )
+and elevated PVC traps (used for litter; sampled bimonthly(once in 2
+months)/monthly for evergreen forests and biweekly-once every 2 weeks
+for deciduous forests) at the terrestrial NEON sites. * Litter was
+defined as matter with the following dimensions for sampling: less than
+50cm in length with a butt end diameter less than 2cm ;woody debris was
+defined as matter with the following dimensions for sampling: greater
+than 50 cm in length with a butt end diameter less than 2cm. *Litter and
+woody debris samples were sorted and quantified for dry biomass (in
+grams; ±0.01g) based on 8 functional group categories: leaves,
+twigs/branches, needles, mixed (not sorted), woody material, seeds,
+flowers and nonreproductive woody plant parts, and other (mosses and
+lichens); LOD for biomass was \textless0.01g.
+\end{quote}
+
+\hypertarget{obtain-basic-summaries-of-your-data-neonics}{%
+\subsection{Obtain basic summaries of your data
+(Neonics)}\label{obtain-basic-summaries-of-your-data-neonics}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  What are the dimensions of the dataset?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Get dimensions }
+\FunctionTok{dim}\NormalTok{(Neonics) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 4623   30
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#The dimensions of the dataset are 4,623 rows by 30 columns.    }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Using the \texttt{summary} function on the ``Effects'' column,
+  determine the most common effects that are studied. Why might these
+  effects specifically be of interest?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Most common effects studied}
+\FunctionTok{summary}\NormalTok{(Neonics}\SpecialCharTok{$}\NormalTok{Effect)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     Accumulation        Avoidance         Behavior     Biochemistry 
+##               12              102              360               11 
+##          Cell(s)      Development        Enzyme(s) Feeding behavior 
+##                9              136               62              255 
+##         Genetics           Growth        Histology       Hormone(s) 
+##               82               38                5                1 
+##    Immunological     Intoxication       Morphology        Mortality 
+##               16               12               22             1493 
+##       Physiology       Population     Reproduction 
+##                7             1803              197
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# The top 5 most common effects studied are:}
+\CommentTok{\#Population, Mortality, Behavior, Feeding Behavior, and Reproduction}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+Answer: The top five most common effects studied based on number of
+observations include: Population (n=1803), Mortality (n=1493), Behavior
+(n=360), Feeding behavior (n=255), and Reproduction (n=197). When
+assessing ecotoxicity,it is important to consider the immediate health
+impacts that can be associated with or instigated by exposure to
+neonicotinoids. Effects such as mortality, reproduction, and behavior
+are critical effects that are detrimental to the growth and development
+of a species. They are good indicators for ecosystem health and are able
+to be observed for short-term consequences.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Using the \texttt{summary} function, determine the six most commonly
+  studied species in the dataset (common name). What do these species
+  have in common, and why might they be of interest over other insects?
+  Feel free to do a brief internet search for more information if
+  needed.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Determine 6 most commonly studied species using summary()}
+\FunctionTok{summary}\NormalTok{(Neonics}\SpecialCharTok{$}\NormalTok{Species.Common.Name)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                          Honey Bee                     Parasitic Wasp 
+##                                667                                285 
+##              Buff Tailed Bumblebee                Carniolan Honey Bee 
+##                                183                                152 
+##                         Bumble Bee                   Italian Honeybee 
+##                                140                                113 
+##                    Japanese Beetle                  Asian Lady Beetle 
+##                                 94                                 76 
+##                     Euonymus Scale                           Wireworm 
+##                                 75                                 69 
+##                  European Dark Bee                  Minute Pirate Bug 
+##                                 66                                 62 
+##               Asian Citrus Psyllid                      Parastic Wasp 
+##                                 60                                 58 
+##             Colorado Potato Beetle                    Parasitoid Wasp 
+##                                 57                                 51 
+##                Erythrina Gall Wasp                       Beetle Order 
+##                                 49                                 47 
+##        Snout Beetle Family, Weevil           Sevenspotted Lady Beetle 
+##                                 47                                 46 
+##                     True Bug Order              Buff-tailed Bumblebee 
+##                                 45                                 39 
+##                       Aphid Family                     Cabbage Looper 
+##                                 38                                 38 
+##               Sweetpotato Whitefly                      Braconid Wasp 
+##                                 37                                 33 
+##                       Cotton Aphid                     Predatory Mite 
+##                                 33                                 33 
+##             Ladybird Beetle Family                         Parasitoid 
+##                                 30                                 30 
+##                      Scarab Beetle                      Spring Tiphia 
+##                                 29                                 29 
+##                        Thrip Order               Ground Beetle Family 
+##                                 29                                 27 
+##                 Rove Beetle Family                      Tobacco Aphid 
+##                                 27                                 27 
+##                       Chalcid Wasp             Convergent Lady Beetle 
+##                                 25                                 25 
+##                      Stingless Bee                  Spider/Mite Class 
+##                                 25                                 24 
+##                Tobacco Flea Beetle                   Citrus Leafminer 
+##                                 24                                 23 
+##                    Ladybird Beetle                          Mason Bee 
+##                                 23                                 22 
+##                           Mosquito                      Argentine Ant 
+##                                 22                                 21 
+##                             Beetle         Flatheaded Appletree Borer 
+##                                 21                                 20 
+##               Horned Oak Gall Wasp                 Leaf Beetle Family 
+##                                 20                                 20 
+##                  Potato Leafhopper         Tooth-necked Fungus Beetle 
+##                                 20                                 20 
+##                       Codling Moth          Black-spotted Lady Beetle 
+##                                 19                                 18 
+##                       Calico Scale                Fairyfly Parasitoid 
+##                                 18                                 18 
+##                        Lady Beetle             Minute Parasitic Wasps 
+##                                 18                                 18 
+##                          Mirid Bug                   Mulberry Pyralid 
+##                                 18                                 18 
+##                           Silkworm                     Vedalia Beetle 
+##                                 18                                 18 
+##              Araneoid Spider Order                          Bee Order 
+##                                 17                                 17 
+##                     Egg Parasitoid                       Insect Class 
+##                                 17                                 17 
+##           Moth And Butterfly Order       Oystershell Scale Parasitoid 
+##                                 17                                 17 
+## Hemlock Woolly Adelgid Lady Beetle              Hemlock Wooly Adelgid 
+##                                 16                                 16 
+##                               Mite                        Onion Thrip 
+##                                 16                                 16 
+##              Western Flower Thrips                       Corn Earworm 
+##                                 15                                 14 
+##                  Green Peach Aphid                          House Fly 
+##                                 14                                 14 
+##                          Ox Beetle                 Red Scale Parasite 
+##                                 14                                 14 
+##                 Spined Soldier Bug              Armoured Scale Family 
+##                                 14                                 13 
+##                   Diamondback Moth                      Eulophid Wasp 
+##                                 13                                 13 
+##                  Monarch Butterfly                      Predatory Bug 
+##                                 13                                 13 
+##              Yellow Fever Mosquito                Braconid Parasitoid 
+##                                 13                                 12 
+##                       Common Thrip       Eastern Subterranean Termite 
+##                                 12                                 12 
+##                             Jassid                         Mite Order 
+##                                 12                                 12 
+##                          Pea Aphid                   Pond Wolf Spider 
+##                                 12                                 12 
+##           Spotless Ladybird Beetle             Glasshouse Potato Wasp 
+##                                 11                                 10 
+##                           Lacewing            Southern House Mosquito 
+##                                 10                                 10 
+##            Two Spotted Lady Beetle                         Ant Family 
+##                                 10                                  9 
+##                       Apple Maggot                            (Other) 
+##                                  9                                670
+\end{verbatim}
+
+\begin{quote}
+Answer: The six most commonly studied species ranked from highest to
+lowest based on number of observations is the Honeybee (n=667),
+Parasitic wasp (n=285), Buff Tailed Bumblebee (n=183), Carniolan Honey
+Bee (n=152), Bumble Bee (n=140), and Italian honeybee (n=113). It is
+important to note that there is a category of Other (not specified
+species) which consists of n=670.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  Concentrations are always a numeric value. What is the class of
+  Conc.1..Author. in the dataset, and why is it not numeric?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#class of Conc.1..Author. }
+\FunctionTok{class}\NormalTok{(Neonics}\SpecialCharTok{$}\NormalTok{Conc.}\DecValTok{1}\NormalTok{..Author.)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "factor"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# class is factor}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+Answer: The class of Conc.1..Author is factor variable because it is
+categorical data. The Conc.1..Author is the effect concentration of
+neonicotinoids recorded from each study's exposure tests and the
+resultant concentrations recorded for some are below or above the
+threshold tested and so these have symbols like \textless{} or
+\textgreater, which makes these observations categories rather numeric
+values.
+\end{quote}
+
+\hypertarget{explore-your-data-graphically-neonics}{%
+\subsection{Explore your data graphically
+(Neonics)}\label{explore-your-data-graphically-neonics}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{8}
+\tightlist
+\item
+  Using \texttt{geom\_freqpoly}, generate a plot of the number of
+  studies conducted by publication year.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Neonic\_studies\_plot}\OtherTok{\textless{}{-}}\FunctionTok{ggplot}\NormalTok{(Neonics)}\SpecialCharTok{+}\FunctionTok{geom\_freqpoly}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Publication.Year), }\AttributeTok{bins =} \DecValTok{45}\NormalTok{)}
+\NormalTok{Neonic\_studies\_plot\_byYear}\OtherTok{\textless{}{-}}\NormalTok{Neonic\_studies\_plot}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Density plot of neonicotinoid studies published between 1982 and 2019"}\NormalTok{,}
+  \AttributeTok{x =}\StringTok{"Publication Year"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Count"}\NormalTok{)}
+\CommentTok{\# renamed the x{-}axis and y{-}axis and plot title with the labs() function}
+\CommentTok{\# I chose 45 bins, because it provided an easy{-}to{-}read distribution.}
+\NormalTok{Neonic\_studies\_plot\_byYear }\CommentTok{\#calling the plot}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{A03_DataExploration_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{9}
+\tightlist
+\item
+  Reproduce the same graph but now add a color aesthetic so that
+  different Test.Location are displayed as different colors.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Neonic\_density\_plot}\OtherTok{\textless{}{-}}\FunctionTok{ggplot}\NormalTok{(Neonics)}\SpecialCharTok{+}
+  \FunctionTok{geom\_freqpoly}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Publication.Year,}\AttributeTok{color=}\NormalTok{Test.Location), }\AttributeTok{bins =} \DecValTok{45}\NormalTok{)}\SpecialCharTok{+} 
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"top"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Density plot of neonicotinoid studies published between 1982 and 2019 by location"}\NormalTok{,}
+  \AttributeTok{x =}\StringTok{"Publication Year"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Count"}\NormalTok{)}
+\CommentTok{\#I changed the labels for the x{-}axis and y{-}axis using the labs()function}
+\CommentTok{\#I gave the density plot a title using the labs() function}
+\CommentTok{\#I moved the legend to the top with the theme(legend.position) function}
+\CommentTok{\# I chose 45 bins, because it provided an easy{-}to{-}read distribution.}
+\NormalTok{Neonic\_density\_plot }\CommentTok{\#calling the plot}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{A03_DataExploration_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+Interpret this graph. What are the most common test locations, and do
+they differ over time?
+
+\begin{quote}
+Answer: The most common test locations are the laboratory indoor setting
+and the natural field settings. As specified in the ECOTOXicology
+Database system metadata, the laboratory settings include greenhouses,
+indoor pots, and garden frames and the natural field settings include
+field surveys and agricultural sites. The trends do differ over time.
+From around 1992 to 2001 and from 2009 to 2010, the published studies
+were mainly from natural field locations. From around 2002 to 2004 and
+from 2011 to around 2020, the published studies were mainly from
+laboratory indoor locations. Published studies in 1982 to 1986 also had
+small peaks of laboratory indoor based studies.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{10}
+\tightlist
+\item
+  Create a bar graph of Endpoint counts. What are the two most common
+  end points, and how are they defined? Consult the ECOTOX\_CodeAppendix
+  for more information.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Endpoint\_bar\_graph}\OtherTok{\textless{}{-}}\FunctionTok{ggplot}\NormalTok{(Neonics,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Endpoint))}\SpecialCharTok{+}\FunctionTok{geom\_bar}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{8}\NormalTok{, }\AttributeTok{angle =} \DecValTok{90}\NormalTok{),}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Ecotoxicological effect endpoints assessed for the neonicotinoids studies "}\NormalTok{,}
+  \AttributeTok{x =}\StringTok{"Effect endpoint"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Count"}\NormalTok{)}
+\CommentTok{\#renamed axes and plot title and centered plot title}
+\CommentTok{\#I also changed the font and angled the x{-}axis categories because they were all bunched up.}
+\CommentTok{\# To do so, I used the theme(axis.text.x=element\_text()) function}
+\NormalTok{Endpoint\_bar\_graph }\CommentTok{\# calling graph}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{A03_DataExploration_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{quote}
+Answer: The two most common endpoints are the LOEL (Lowest observable
+effect level) and the NOEL (no observable effect level) for the
+terrestrial ecosystem assessments. From the ECOTOX\_CodeAppendix, the
+LOEL is the smallest dose of the neonicotinoid where you see a critical
+effect in the exposed terrestial species that is significantly different
+from the controls in the study. From the ECOTOX\_CodeAppendix, the NOEL
+is the smallest dose of the neonicotinoid where no effects are observed
+that are significantly different from the controls in the exposure
+study.
+\end{quote}
+
+\hypertarget{explore-your-data-litter}{%
+\subsection{Explore your data (Litter)}\label{explore-your-data-litter}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{11}
+\tightlist
+\item
+  Determine the class of collectDate. Is it a date? If not, change to a
+  date and confirm the new class of the variable. Using the
+  \texttt{unique} function, determine which dates litter was sampled in
+  August 2018.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Determine class of collectDate}
+\FunctionTok{class}\NormalTok{(Litter}\SpecialCharTok{$}\NormalTok{collectDate)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "character"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#the class of collectDate is factor}
+
+\CommentTok{\#Change from factor to date}
+\NormalTok{Litter}\SpecialCharTok{$}\NormalTok{collectDate}\OtherTok{\textless{}{-}}\FunctionTok{as.Date}\NormalTok{(Litter}\SpecialCharTok{$}\NormalTok{collectDate)}
+\CommentTok{\#Check class of collectDate }
+\FunctionTok{class}\NormalTok{(Litter}\SpecialCharTok{$}\NormalTok{collectDate)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Date"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#class is now Date}
+
+\CommentTok{\#Use unique function to to determine which dates litter was sampled }
+\NormalTok{litter\_sample\_dates}\OtherTok{\textless{}{-}}\FunctionTok{unique}\NormalTok{(Litter}\SpecialCharTok{$}\NormalTok{collectDate) }
+\CommentTok{\#created object \textasciigrave{}litter\_sample\_dates\textasciigrave{} for unique(Litter$collectDate)}
+\NormalTok{litter\_sample\_dates }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2018-08-02" "2018-08-30"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#litter was sampled on 2018{-}08{-}02 and 2018{-}08{-}30. }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{12}
+\tightlist
+\item
+  Using the \texttt{unique} function, determine how many plots were
+  sampled at Niwot Ridge. How is the information obtained from
+  \texttt{unique} different from that obtained from \texttt{summary}?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Class of plotID}
+\FunctionTok{class}\NormalTok{(Litter}\SpecialCharTok{$}\NormalTok{plotID)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "character"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#class of plotID is character }
+\CommentTok{\#summary(Litter$plotID) provides the following output:}
+\CommentTok{\#   Length     Class      Mode }
+\CommentTok{\#       188   character  character }
+
+\CommentTok{\#Determine \# of plots sampled at Niwot Ridge using unique()}
+\NormalTok{plots\_sampled\_at\_NR}\OtherTok{\textless{}{-}}\FunctionTok{unique}\NormalTok{(Litter}\SpecialCharTok{$}\NormalTok{plotID)}
+\NormalTok{plots\_sampled\_at\_NR}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "NIWO_061" "NIWO_064" "NIWO_067" "NIWO_040" "NIWO_041" "NIWO_063"
+##  [7] "NIWO_047" "NIWO_051" "NIWO_058" "NIWO_046" "NIWO_062" "NIWO_057"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{length}\NormalTok{(plots\_sampled\_at\_NR) }\CommentTok{\#length() tells me 12 plots were sampled}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Unique returns:}
+\CommentTok{\#"NIWO\_061" "NIWO\_064" "NIWO\_067" "NIWO\_040" }
+\CommentTok{\#"NIWO\_041" "NIWO\_063" "NIWO\_047" "NIWO\_051" }
+\CommentTok{\#"NIWO\_058" "NIWO\_046" "NIWO\_062" "NIWO\_057"}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{quote}
+Answer: The information from unique() is different from the information
+obtained from summary() because unique() shows you the exact plots that
+were sampled and removes any duplicate counts of the same plot name. I
+used the length() function on the object I created from the unique()
+function to tell me that there were 12 unique plots sampled in this
+dataset. plotID is a character variable, and when I use the summary()
+function it only summarizes the length of all the observations. So there
+are repeated counts of the plots and it does not return the unique
+fields like the unique() function. Not only do I know that 12 plots were
+sampled, I also know the exact plots which were:NIWO\_061, NIWO\_064,
+NIWO\_067, NIWO\_040, NIWO\_041, NIWO\_063, NIWO\_047, NIWO\_051,
+NIWO\_058, NIWO\_046, NIWO\_062, NIWO\_057.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{13}
+\tightlist
+\item
+  Create a bar graph of functionalGroup counts. This shows you what type
+  of litter is collected at the Niwot Ridge sites. Notice that litter
+  types are fairly equally distributed across the Niwot Ridge sites.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Functional\_group\_bargraph}\OtherTok{\textless{}{-}}\FunctionTok{ggplot}\NormalTok{(Litter,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{functionalGroup))}\SpecialCharTok{+}\FunctionTok{geom\_bar}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Types of litter collected at the Niwot Ridge sites"}\NormalTok{,}
+  \AttributeTok{x =}\StringTok{"Litter functional group"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Count"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{10}\NormalTok{, }\AttributeTok{angle =} \DecValTok{20}\NormalTok{),}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{)) }
+\CommentTok{\#renamed axes and plot title and center adjusted plot title}
+\CommentTok{\#titled text in x{-}axis b/c words were overlapping}
+\NormalTok{Functional\_group\_bargraph }\CommentTok{\#calling graph }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{A03_DataExploration_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{14}
+\tightlist
+\item
+  Using \texttt{geom\_boxplot} and \texttt{geom\_violin}, create a
+  boxplot and a violin plot of dryMass by functionalGroup.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#boxplot of dryMass by functionalGroup}
+\NormalTok{dryMass\_boxplot}\OtherTok{\textless{}{-}}\FunctionTok{ggplot}\NormalTok{(Litter)}\SpecialCharTok{+}\FunctionTok{geom\_boxplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{functionalGroup, }\AttributeTok{y=}\NormalTok{dryMass))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Dry masses of litter functional groups at Niwot Ridge"}\NormalTok{,}
+  \AttributeTok{x =}\StringTok{"Functional group"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Dry mass (grams)"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{10}\NormalTok{, }\AttributeTok{angle =} \DecValTok{15}\NormalTok{),}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{)) }
+\NormalTok{dryMass\_boxplot }\CommentTok{\#calling the boxplot object}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{A03_DataExploration_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#violin plot of dryMass by functionalGroup}
+\NormalTok{dryMass\_violin}\OtherTok{\textless{}{-}}\FunctionTok{ggplot}\NormalTok{(Litter)}\SpecialCharTok{+}
+  \FunctionTok{geom\_violin}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{functionalGroup, }\AttributeTok{y=}\NormalTok{dryMass))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title=}\StringTok{"Dry masses of litter functional groups at Niwot Ridge"}\NormalTok{,}
+  \AttributeTok{x =}\StringTok{"Functional group"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Dry mass (grams)"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{10}\NormalTok{, }\AttributeTok{angle =} \DecValTok{15}\NormalTok{),}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{)) }
+\NormalTok{dryMass\_violin }\CommentTok{\#calling the violin plot object}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{A03_DataExploration_files/figure-latex/unnamed-chunk-12-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Changed functionalGroup from character to factor }
+\CommentTok{\#checked the sample size of the different functional groups}
+\FunctionTok{summary}\NormalTok{(}\FunctionTok{as.factor}\NormalTok{(Litter}\SpecialCharTok{$}\NormalTok{functionalGroup)) }\CommentTok{\#sample sizes are relatively small}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        Flowers         Leaves          Mixed        Needles          Other 
+##             23             24             10             30             24 
+##          Seeds Twigs/branches Woody material 
+##             23             28             26
+\end{verbatim}
+
+Why is the boxplot a more effective visualization option than the violin
+plot in this case?
+
+\begin{quote}
+Answer: The boxplot is a more effective visualizaiton option than the
+violin plot because I can visualize the distribution of the data for
+each functional group. I can see the outliers present in each functional
+group category. I can also better visualize the skewness of each
+distribution in the boxplot as opposed to the violin plot. The violin
+plot doesn't show the distribution variation well and we don't see the
+IQR, quartiles, and the median as we do with the boxplot. I also checked
+the sample size, which is relatively small as most are n\textless30
+(with the exception of needles), and the violin plot shows a distorted
+version of the data, the distribution looks a lot smoother, which isn't
+the case with the boxplot. The outlier seen in the boxplot for
+twigs/branches is deceiving in the violin plot, which makes it look like
+twigs has the second highest biomass, but it is not.
+\end{quote}
+
+What type(s) of litter tend to have the highest biomass at these sites?
+
+\begin{quote}
+Answer: Based on the boxplots, needles have the highest dry biomass at
+the Niwot Ridge sites and Mixed (which the User Guide defines as
+unsorted material) has the second highest dry biomass at these sites.
+\end{quote}
+
+\end{document}

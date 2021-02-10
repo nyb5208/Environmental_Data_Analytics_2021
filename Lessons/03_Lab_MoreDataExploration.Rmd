@@ -37,22 +37,22 @@ vector2
 vector3 <- c(TRUE,TRUE,TRUE,FALSE,TRUE,FALSE) #logical vector
 vector3
 
-vector1[3] # 
+vector1[3] # third value in vector1 
 
 # Matrices ----
-matrix1 <- matrix(1:20, nrow = 5,ncol = 4) # 
+matrix1 <- matrix(1:20, nrow = 5,ncol = 4) # 4x5 matrix default is by column 
 matrix1
-matrix2 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE) #
+matrix2 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE) # read across from left to right; byrow specifies by row
 matrix2
 matrix3 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE, # return after comma continues the line
                   dimnames = list(c("uno", "dos", "tres", "cuatro", "cinco"), 
                                   c("un", "deux", "trois", "cat"))) #
 
-matrix1[4, ] #
-matrix1[ , 3] #
-matrix1[c(12, 14)] #
-matrix1[c(12:14)] #
-matrix1[2:4, 1:3] #
+matrix1[4, ] #4, 9, 14, 19 (index row 4)
+matrix1[ , 3] # 3rd column: 11,12,13,14,15
+matrix1[c(12, 14)] #columns 12, 14
+matrix1[c(12:14)] #columns 12,13,14
+matrix1[2:4, 1:3] #rows 2 to 4 and columns 1 to 3
 
 cells <- c(1, 26, 24, 68)
 rnames <- c("R1", "R2")
@@ -66,13 +66,13 @@ list1 <- list(name = "Maria", mynumbers = vector1, mymatrix = matrix1, age = 5.3
 list1[[2]]
 
 # Data Frames ----
-d <- c(1, 2, 3, 4) # What type of vector?
-e <- c("red", "white", "red", NA) # What type of vector?
-f <- c(TRUE, TRUE, TRUE, FALSE) # What type of vector?
-dataframe1 <- data.frame(d,e,f) #
-names(dataframe1) <- c("ID","Color","Passed"); View(dataframe1) # 
+d <- c(1, 2, 3, 4) # What type of vector? numeric
+e <- c("red", "white", "red", NA) # What type of vector? character
+f <- c(TRUE, TRUE, TRUE, FALSE) # What type of vector? logical 
+dataframe1 <- data.frame(d,e,f) #combined vectors into a dataframe 
+names(dataframe1) <- c("ID","Color","Passed"); View(dataframe1) #Columns ID, Color, Passed 
 
-dataframe1[1:2,] # 
+dataframe1[1:2,] # these specify rows 1 to 2
 dataframe1[c("ID","Passed")] # 
 dataframe1$ID
 
@@ -93,25 +93,43 @@ Question: In the R chunk below, write "dataframe1$". Press `tab` after you type 
 Find a ten-day forecast of temperatures (Fahrenheit) for Durham, North Carolina. Create two vectors, one representing the high temperature on each of the ten days and one representing the low.
 
 ```{r}
+Tenday_highs<-c(51,60,48,47,44,39,37,37,36,49)
+Tenday_lows<-c(38,38,40,34,29,28,19,24,29,30)
 
 ```
 
 Now, create two additional vectors that include the ten-day forecast for the high and low temperatures in Celsius. Use a function to create the two new vectors from your existing ones in Fahrenheit.
 
 ```{r}
+Temp_in_celsius<-function(x){
+  Tendays_C <-((x-32)*5)/9
+  return(list(Tendays_C=Tendays_C))
+}
+Highs_inC<-Temp_in_celsius(Tenday_highs)
+Lows_inC<-Temp_in_celsius(Tenday_lows)
+Highs_inC
+class(Highs_inC)
+Lows_inC
+Tendayhighs_C<-c(10.555556, 15.555556,8.888889,8.333333,6.666667,  3.888889,2.777778,2.777778,2.222222,9.444444)
+Tendaylows_C<-c(3.333333,3.333333,4.444444,1.111111,-1.666667,-2.222222,-7.222222,-4.444444,-1.666667,-1.111111)
 
 ```
 
 Combine your four vectors into a data frame and add informative column names.
 
 ```{r}
-
+Tenday_tempsDurham<-data.frame(Tenday_highs,Tenday_lows,Tendayhighs_C,Tendaylows_C)
+Tenday_tempsDurham
 ```
 
 Use the common functions `summary` and `sd` to obtain basic data summaries of the ten-day forecast. How would you call these functions differently for the entire data frame vs. a single column? Attempt to demonstrate both options below.
 
 ```{r}
-
+summary(Tenday_tempsDurham)
+sd(Tenday_tempsDurham$Tenday_highs)
+sd(Tenday_tempsDurham$Tenday_lows)
+sd(Tenday_tempsDurham$Tendayhighs_C)
+sd(Tenday_tempsDurham$Tendaylows_C)
 ```
 
 ### Date objects
@@ -134,9 +152,9 @@ Remember formatting of dates in R:
 # (code must be uncommented)
 today <- Sys.Date()
 format(today, format = "%B")
-#format(today, format = "")
-#format(today, format = "")
-#format(today, format = "")
+format(today, format = "%A")
+format(today, format = "%b")
+format(today, format = "%Y")
 
 ```
 
@@ -148,7 +166,7 @@ Install and load the package lubridate into your R session. Lubridate offers fas
 More info on lubridate [here][https://cran.r-project.org/web/packages/lubridate/lubridate.pdf].
 
 ```{r DateExercise1}
-#install.packages("lubridate")
+install.packages("lubridate") #lubridate is for handling date objects (like conversion)
 library(lubridate)
 
 #Ex1
@@ -159,7 +177,7 @@ date_obj_today
 
 #Ex2
 str_today <- "21-feb-3"
-#Sine the format is year-month-day we will use function ymd()
+#Since the format is year-month-day we will use function ymd()
 date_obj_today <- ymd(str_today)
 date_obj_today
 
@@ -187,11 +205,11 @@ fixed_date_obj_past
 #Fix for century issue
 str_past <- "55-feb-3"
 #Alternative 1
-date_obj_past <- fast_strptime(str_past,"%y-%b-%d",cutoff_2000=21L)
+date_obj_past <- fast_strptime(str_past,"%y-%b-%d",cutoff_2000=21L) #century cutoff is 21L because we are in year 2021
 date_obj_past
 
 #Alternative 2
-date_obj_past2 <- parse_date_time2(str_past,"ymd",cutoff_2000=21L)
+date_obj_past2 <- parse_date_time2(str_past,"ymd",cutoff_2000=21L) #(date, order of element, cutoff)
 date_obj_past2
 
 #Functions ymd(), mdy(), ydm() do not take argument cutoff_2000
