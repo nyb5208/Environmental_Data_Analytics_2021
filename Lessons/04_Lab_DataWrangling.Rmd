@@ -19,7 +19,7 @@ Today we will work with a dataset from the [North Temperate Lakes Long-Term Ecol
 
 Opening discussion: why might we be interested in long-term observations of temperature, oxygen, and light in lakes?
 
-> Add notes here: 
+> Add notes here: We may be interested in long-term observations of temperature, oxygen, and light in lakes if we are monitoring them for eutrophication (N and P pollution) and want to assess the water health quality. 
 
 ```{r, message = FALSE}
 getwd()
@@ -40,8 +40,8 @@ NTL.phys.data$sampledate <- as.Date(NTL.phys.data$sampledate, format = "%m/%d/%y
 Filtering allows us to choose certain rows (observations) in our dataset.
 
 ```{r}
-class(NTL.phys.data$lakeid)
-class(NTL.phys.data$depth)
+class(NTL.phys.data$lakeid) #factor
+class(NTL.phys.data$depth) #numeric
 
 # dplyr filtering
 NTL.phys.data.surface <- filter(NTL.phys.data, depth == 0)
@@ -57,16 +57,17 @@ NTL.phys.data.JunethruOctober <- filter(NTL.phys.data, daynum %in% c(152:304))
 # Exercise 1: 
 # filter NTL.phys.data for the year 1999
 # what code do you need to use, based on the class of the variable?
-
+class(NTL.phys.data$year4) 
+#class is integer
 
 # Exercise 2: 
 # filter NTL.phys.data for Tuesday Lake from 1990 through 1999.
-
+NTL.phys.data.1990_thru_1999<-filter(NTL.phys.data, lakename == "Tuesday Lake" & year4 %in% c(1990:1999))
 
 ```
 Question: Why don't we filter using row numbers?
 
-> Answer: 
+> Answer: Tidyverse does not preserve row numbers, which makes filtering by row_numbers inaccurate.
 
 ## Pipes
 
@@ -82,13 +83,17 @@ NTL.phys.data.processed <-
   mutate(temperature_F = (temperature_C*9/5) + 32)
 
 #Exercise 3: Using a pipe filter NTL.phys.data for Tuesday Lake from 1990 through 1999 only for July 
-
-
-
-
+NTL.phys.data.processed.Tuesday<-
+  NTL.phys.data %>%
+  filter(lakename == "Tuesday Lake" & year4 %in% c(1990:1999) & daynum %in% c(185:206))
 
 #Exercise 4: Using the data from part 3, a pipe and the summarise() function find the mean surface temperature (hints: you will need to add another filter for depth==0). Make sure you eliminate NAs before computing the means
-
+NTL.Tuesday.summary<-
+  NTL.phys.data.processed.Tuesday %>%
+  filter(depth == 0) %>% 
+  filter(!is.na(temperature_C)) %>% 
+  summarise(meantemp_C =mean(temperature_C))
+  # mean surface temp is 22.535 degrees Celsius
   
 ```
 
@@ -98,9 +103,13 @@ For gather we will use `pivot_longer` and for spread we will use `pivot_wider`.
 
 ```{r}
 #Exercise 5: gather irradiance data (measured in the water column and measured on the deck of the sampling boat) into one column using pivot_longer
-
+NTL.phys.data.irrad.gathered<-pivot_longer(NTL.phys.data,irradianceWater:irradianceDeck,names_to="Sampling.Type",values_to="Irradiance.Value")
+#remove NAs from irradiance column 
+NTL.phys.data.irrad.gathered<-subset(NTL.phys.data.irrad.gathered, !is.na(Irradiance.Value) & !is.na(temperature_C))
 
 #Exercise 6: spread temperatureC into more than one column based on the depth
+NTL.phys.data.temp.subset<-select(NTL.phys.data.irrad.gathered,lakename:Irradiance.Value)
+NTL.phys.data.temp.depth<-pivot_wider(NTL.phys.data.temp.subset,names_from=depth,values_from=temperature_C )
 
 ```
 

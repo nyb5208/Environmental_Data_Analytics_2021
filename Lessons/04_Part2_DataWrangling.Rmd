@@ -17,7 +17,7 @@ editor_options:
 
 ```{r, message = FALSE}
 getwd()
-library(plyr)
+library(dplyr)
 library(tidyverse)
 library(lubridate)
 NTL.phys.data.PeterPaul <- read.csv("./Data/Processed/NTL-LTER_Lake_ChemistryPhysics_PeterPaul_Processed.csv")
@@ -48,7 +48,7 @@ summary(NTL.nutrient.data.PeterPaul$lakename)
 NTL.nutrient.data.PeterPaul <- droplevels(NTL.nutrient.data.PeterPaul)
 summary(NTL.nutrient.data.PeterPaul$lakename)
 summary(NTL.nutrient.data.PeterPaul$comments)
-class(NTL.nutrient.data.PeterPaul$sampledate)
+class(NTL.nutrient.data.PeterPaul$sampledate) #currently factor-->change it to date
 NTL.nutrient.data.PeterPaul$sampledate <- as.Date(NTL.nutrient.data.PeterPaul$sampledate, format = "%m/%d/%y")
 
 NTL.nutrient.data.PeterPaul <- 
@@ -68,7 +68,8 @@ NTL.phys.data.PeterPaul.subset <- select(NTL.phys.data.PeterPaul,
 NTL.nutrient.data.PeterPaul.subset <- select(NTL.nutrient.data.PeterPaul, 
                                              lakename, year4, daynum, month, sampledate, depth:po4)
 
-# write a more succinct line of code to subset the nutrient dataset. 
+# write a more succinct line of code to subset the nutrient dataset.
+NTL.nutrient.data.PeterPaul.subset1<-select(NTL.nutrient.data.PeterPaul,lakename:sampledate,depth:po4)
 
 ```
 
@@ -82,7 +83,7 @@ For most situations, data analysis works best when you have organized your data 
 
 However, there may be situations where we want to reshape our dataset, for example if we want to facet numerical data points by measurement type (more on this in the data visualization unit). We can program this reshaping in a few short lines of code using the package `tidyr`, which is conveniently included in the `tidyverse` package. 
 
-We will work with the new functions from `tidyr`. For gather we will use `pivot_longer` and for spread we will use `pivot_wider`. Note that if you are familiar with `gather` and `spread` will may still use it, they are not going away, but they are not under active development.
+We will work with the new functions from `tidyr`. For gather we will use `pivot_longer` and for spread we will use `pivot_wider`. Note that if you are familiar with `gather` and `spread` we may still use it, they are not going away, but they are not under active development.
 
 ```{r}
 # Gather nutrient data into one column
@@ -92,7 +93,7 @@ We will work with the new functions from `tidyr`. For gather we will use `pivot_
 NTL.nutrient.data.PeterPaul.gathered <- pivot_longer(NTL.nutrient.data.PeterPaul.subset,tn_ug:po4, names_to = "nutrient", values_to = "concentration")
 
 NTL.nutrient.data.PeterPaul.gathered <- subset(NTL.nutrient.data.PeterPaul.gathered, !is.na(concentration))
-count(NTL.nutrient.data.PeterPaul.gathered, nutrient)
+dplyr::count(NTL.nutrient.data.PeterPaul.gathered, nutrient) #returns # of different nutrient values 
 
 write.csv(NTL.nutrient.data.PeterPaul.gathered, row.names = FALSE, 
           file = "./Data/Processed/NTL-LTER_Lake_Nutrients_PeterPaulGathered_Processed.csv")
@@ -101,7 +102,7 @@ write.csv(NTL.nutrient.data.PeterPaul.gathered, row.names = FALSE,
 #NTL.nutrient.data.PeterPaul.spread <- spread(NTL.nutrient.data.PeterPaul.gathered, nutrient, concentration)
 
 # Spread nutrient data into separate columns using pivot_wider
-NTL.nutrient.data.PeterPaul.spread2 <- pivot_wider(NTL.nutrient.data.PeterPaul.gathered, names_from = nutrient, values_from = concentration)
+NTL.nutrient.data.PeterPaul.spread2 <- pivot_wider(NTL.nutrient.data.PeterPaul.gathered, names_from = nutrient, values_from = concentration) #making rows into columns, make dataset wider than original 
 
 # Split components of cells into multiple columns
 # Opposite of 'separate' is 'unite'
@@ -152,7 +153,7 @@ However, there are 20 months in this dataset, so importing all these files indiv
 ```{r}
 LitterFiles = list.files(path = "./Data/Raw/NIWO_Litter/", pattern="*.csv", full.names=TRUE)
 LitterFiles
-
+#list.files needs a path specified to folder with all files you want, read the csv files, use the full names of the files
 Litter <- LitterFiles %>%
   ldply(read.csv)
 ```
@@ -189,7 +190,7 @@ NTL.PeterPaul.summaries <-
             sdTN = sd(tn_ug), 
             meanTP = mean(tp_ug), 
             sdTP = sd(tp_ug))
-
+#filter by depth 0 for surface water data, group by lake name and month, filter na's out of the following columns
 write.csv(NTL.PeterPaul.summaries, row.names = FALSE, 
           file ="./Data/Processed/NTL-LTER_Lake_Summaries_PeterPaul_Processed.csv")
 
