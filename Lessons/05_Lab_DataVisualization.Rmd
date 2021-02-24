@@ -19,6 +19,7 @@ editor_options:
 The expression function can be used when you want to add mathematical symbols and subscripts mixed with regular letter to labels. 
 
 ```{r}
+library(ggplot2)
 Plot_text <-
 ggplot(data=data.frame(x=0,y=0))+
   geom_point(aes(x=x,y=y)) +
@@ -34,6 +35,7 @@ ggsave("./Output/Plot_text.jpg",Plot_text, height = 4, width = 6, units = "in", 
 ```{r, message = FALSE, warning = FALSE}
 getwd()
 library(tidyverse)
+library(lubridate)
 library(ggridges)
 library(viridis)
 library(RColorBrewer)
@@ -59,16 +61,23 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Plot surface temperatures by day of  year. 
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
-
+as.character(PeterPaul.chem.nutrients$year4)
+#######
+surface.temp.plot1<-ggplot(subset(PeterPaul.chem.nutrients,depth == 0), aes(x = daynum , y = temperature_C, color= year4))+geom_point()
+print(surface.temp.plot1)
+#
+surface.temp.plot<-ggplot(subset(PeterPaul.chem.nutrients,depth == 0), aes(x = daynum , y = temperature_C, color= year4))+geom_point()+facet_wrap(vars(lakename), nrow = 2)+ylab("Surface Temperature (°C)")+xlab("Day of Year")+labs(color= "Year")
+print(surface.temp.plot)
 
 #2. 
 # Plot temperature by date. Color your points by depth.
 # Change the size of your point to 0.5
 # Change the color palette to magma and play with direction (+- 1), which one makes more sense?
 # Change x axis to include marker/labels every 5 years
-
-
-
+temp.date.plot<-ggplot(PeterPaul.chem.nutrients,  aes(x=sampledate, y=temperature_C,
+  color=depth))+geom_point(alpha = 1, size = 0.5)+scale_color_viridis(option = "magma", direction = -1)+ylab("Temperature (°C)")+xlab("Sampling date")+
+  scale_x_date(date_breaks = "5 years", date_labels = "%b %y") 
+print(temp.date.plot)
 
 ```
 ## Plotting the relationship between two continuous variables: Scatterplot
@@ -81,7 +90,13 @@ Exercise: Plot relationships between air quality measurements
 # Plot AQI values for ozone by PM2.5, colored by latitude 
 # Make the points 50 % transparent
 # Add a line of best fit for the linear regression of these variables.
+AQI.ozone.plot<-ggplot(EPAair, aes(x= PM2.5,y= Ozone, color=mean_Latitude))+
+  geom_point(alpha = 0.5, size =1.5)+ geom_smooth(method = lm)+
+  ylab("Mean Ozone AQI value")+
+  xlab("Mean PM2.5 AQI value")+
+  labs(color="Average Latitude")
 
+print(AQI.ozone.plot) 
 
 
 
@@ -92,12 +107,21 @@ Exercise: Plot relationships between air quality measurements
 Exercise: Plot distributions of AQI values for EPAair.
 
 ```{r, fig.height = 3, fig.width = 4, warning = FALSE}
-
 # 4. 
 # Create several types of plots depicting PM2.5, divided by year. 
 # Choose which plot displays the data best and justify your choice. 
+EPAair$Year<-as.factor(EPAair$Year)
+EPAair$Month<-as.factor(EPAair$Month)
+EPAair.month<-arrange(EPAair, Month)
+AQIplot<-ggplot(EPAair, aes(x=Site.Name, y=PM2.5,color=Year,fill=Year))+
+  geom_bar(stat="identity")+
+  ylab("Mean PM2.5 AQI Value")
+print(AQIplot)
 
-
+AQIboxplot<-ggplot(EPAair, aes(x=COUNTY,y=PM2.5,fill=Year))+
+  geom_boxplot()+ylab("Mean PM2.5 AQI Value")+xlab("County")
+print(AQIboxplot)
+  
 
 ```
 

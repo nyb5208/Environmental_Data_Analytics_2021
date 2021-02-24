@@ -209,7 +209,8 @@ dim(EPA_air_processed_spread) #8976 x 9
 #Instead of NC1718, I named it NC1819 to fit the years of the data
 write.csv(EPA_air_processed_spread, 
           row.names=FALSE,file="Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
-
+processed<-read.csv("Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
+view(processed)
 ```
 
 
