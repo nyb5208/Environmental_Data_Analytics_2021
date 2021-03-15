@@ -1,6 +1,6 @@
 ---
 title: "Assignment 7: Time Series Analysis"
-author: "Student Name"
+author: "Nancy Bao"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -31,6 +31,26 @@ The completed exercise is due on Tuesday, March 16 at 11:59 pm.
 
 ```{r, message = FALSE}
 #1
+#Check working directory
+getwd()
+#Load packages
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(zoo)
+library(trend)
+#Set ggplot theme
+theme07<-theme_bw(base_size=12)+
+           theme(plot.title=element_text(size=14, 
+                                    face="bold", 
+                                    color="black",
+                                    hjust=0.5),
+                 axis.text = element_text(color = "black"),
+                 axis.title = element_text(color= "black",face= "bold"),
+                 legend.position = "top")
+theme_set(theme07)
+
+#2 Import Ozone_TimeSeries data
 
 ```
 
@@ -85,7 +105,7 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 ```{r}
 #9
-
+GaringerOzone.monthly<-
 ```
 
 
@@ -93,7 +113,10 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 ```{r}
 #10
+#First time series object
 
+#Second time series object
+GaringerOzone.monthly.ts<-
 ```
 
 
@@ -136,13 +159,6 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 16. Run the Mann Kendall test on the non-seasonal Ozone monthly series. Compare the results with the ones obtained with the Seasonal Mann Kendall on the complete series.
 
 ```{r}
-#15
-
-
-
-#16
-
-
 
 
 ```

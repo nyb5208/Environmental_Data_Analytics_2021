@@ -81,15 +81,26 @@ BRA_complete <- inner_join(Rainfall_BR_processed,Temp_BR_processed)
 ```{r}
 
 #Exercise 5: Check if there is any missing data for both temperature and rainfall series.
-
-
+summary(Rainfall_BR_processed)
+summary(Temp_BR_processed)
+#NAs are gone
 
 
 #Exercise 6: Plot both series over time on separate plots. Add a trend line using geom_smooth(). Can you say something about the trend just by visualizing the data?
 
+rainplot<-ggplot(Rainfall_BR_processed, aes(x= Date, y=Rainfall)) +
+ geom_point() +
+  geom_line() +
+  ylab("Average Rainfall (mm)") +
+  geom_smooth( method = lm )
+print(rainplot)
 
-
-
+tempplot<-ggplot(Temp_BR_processed, aes(x = Date, y = Temperature_C)) +
+  geom_point() +
+  geom_line() +
+  ylab("Average Temperature (°C)") +
+  geom_smooth( method = lm )
+print(tempplot)
 
 
 ```
@@ -98,9 +109,16 @@ BRA_complete <- inner_join(Rainfall_BR_processed,Temp_BR_processed)
 
 ```{r}
 #Exercise 7: Create a time series objects for each series using ts(). Make sure you specify the starting point and frequency.
-
-
-
+f_month <- month(first(BRA_complete$Date))
+f_year <- year(first(BRA_complete$Date))
+rain_ts <- ts(BRA_complete$Rainfall,
+                   start=c(f_year,f_month),
+                   frequency=12) 
+plot(rain_ts)
+temp_ts <- ts(BRA_complete$Temperature_C,
+                   start=c(f_year,f_month),
+                   frequency=12) 
+plot(temp_ts)
 ```
 
 
@@ -158,16 +176,14 @@ Monotonic trends are a gradual shift over time that is consistent in direction. 
 
 # Exercise 11: Apply one of the trend detection test to the original data set. Remember that the data has seasonal component, which test can be applied in this case?
 
+trend.rain<- Kendall::SeasonalMannKendall(rain_ts)
+summary(trend.rain)
 
-
-
-
-
-
-
+trend.temp<-Kendall::SeasonalMannKendall(temp_ts)
+summary(trend.temp)
 
 # Exercise 12: Now remove the seasonality and apply another test. Compare the results with what you obtained on Exercise 9.
-
+trend<-Kendall::MannKendall
 
 
 
