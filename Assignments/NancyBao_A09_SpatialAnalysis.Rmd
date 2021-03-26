@@ -1,11 +1,14 @@
 ---
-title: "Assignment 9: Spatial Analysis in R"
+title: 'Assignment 9: Spatial Analysis in R'
 author: "Nancy Bao"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 geometry: margin=2.54cm
-editor_options: 
+editor_options:
   chunk_output_type: console
-  markdown: 
+  markdown:
     wrap: 72
 ---
 
@@ -37,7 +40,6 @@ library(tidyverse)
 library(sf)
 library(leaflet)
 library(mapview)
-library(RColorBrewer)
 ```
 
 ### Read (and filter) county features into an sf dataframe and plot
@@ -59,7 +61,11 @@ st_crs(NE_counties_sf)$epsg
 #The CRS is NAD83 (North American Datum 1983); epsg code: 4269
 
 #5. Plot the data
-mapview(NE_counties_sf, zcol ="AWATER")
+NEcounties_plot<-ggplot()+
+                geom_sf(data=NE_counties_sf, aes(color="NAME"),fill="white")+
+                scale_color_discrete(name=NULL,labels=c("Nebraska counties"))
+print(NEcounties_plot)
+#I used scale_color_discrete to rename the legend to "Nebraska counties".
 ```
 
 6. What is the EPSG code of the Counties dataset? Is this a geographic or a projected coordinate reference system? (Or, does this CRS use angular or planar coordinate units?) To what datum is this CRS associated? (Tip: look the EPSG code on <https://spatialreference.org>) 
@@ -122,18 +128,23 @@ colnames(usgs_gage_sf)
 ```{r Plot the spatial features}
 #13. Plot the gage locations atop the county features
 NWIS_Gage_Location_NE_plot<- ggplot()+
-                              geom_sf(data= NE_counties_sf,fill="orange",alpha=0.5) + 
-                              geom_sf(data= usgs_gage_sf,color="blue", alpha=0.7)+
+                              geom_sf(data= NE_counties_sf,aes(color="NAME"),
+                                      alpha=0.5, fill="white") + 
+                              scale_color_discrete(name = NULL, 
+                                    labels = c("Nebraska counties"))+
+                              geom_sf(data= usgs_gage_sf,color="blue",
+                                     aes(fill="station_nm"), alpha=0.7)+
+                              scale_fill_discrete(name = NULL, labels = c("USGS gage station"))+
                               labs(title="NWIS Gage Locations in Nebraska",
                                    subtitle="Nancy Bao",
-                                   caption="Blue dots represent USGS gages. County borders are outlined in gray.")+
+                              caption="Blue dots represent USGS gage stations. County borders are outlined in gray.")+
                               theme(plot.title = element_text(hjust = 0.5),
                               plot.subtitle = element_text(hjust = 0.5),
-                              plot.caption=element_text(hjust=0.25))+
-                              theme(legend.position = "none")
+                              plot.caption=element_text(hjust=0.25))
 print(NWIS_Gage_Location_NE_plot)
 # I manually picked orange for the county layer and blue for the gage locations.
 #I used labs(title="",subtitle="",caption="") to label the map.
+# I renamed legend titles with scale_color_discrete() and scale_fill_discrete()
 #I added a caption to describe the colors and markers. 
 ```
 
@@ -178,10 +189,22 @@ Now we can examine where the flooding appears most acute by visualizing gage hei
 
 ```{r}
 #Map the points, sized by gage height
+gage_heights_map<-ggplot()+
+                    geom_sf(data=NE_counties_sf,color="black",
+                          fill="white")+
+                    geom_sf(data=site_flow_location_join,
+                                aes(color= gage_ht),size=1.5,alpha=1)+
+                    scale_color_continuous(name="USGS gage height (in meters)")+
+                    labs(title="NWIS Gage Locations in Nebraska",
+                                   subtitle="Nancy Bao")+
+                    theme(plot.title = element_text(hjust = 0.5),
+                              plot.subtitle = element_text(hjust = 0.5))
 
-
-#ggplot
-
+print(gage_heights_map)
+#I distinguished gage height by a blue gradient:
+#with the lowest heights the darkest and the highest heights the lightest blues.
+#I used hjust=0.5 to center the title
+#I renamed the legend with the scale_color_continuous()
 
 ```
 
@@ -199,11 +222,23 @@ Up next we will do some spatial analysis with our data. To prepare for this, we 
 
 ```{r}
 #20 Transform the counties and gage location datasets to UTM Zone 14
-
+NE_counties_sf_utm <-st_transform(NE_counties_sf, crs =32614)
+nwis_gage_location_sf_utm <-st_transform(usgs_gage_sf , crs = 32614)
 
 #21 Plot the data
-
-
+#I used ggplot to plot the transformed datasets and used scale_fill_discrete to rename legend
+gage_county_map<-ggplot()+
+                  geom_sf(data=NE_counties_sf_utm,
+                         color="black",fill="white")+
+                 geom_sf(data=nwis_gage_location_sf_utm,
+                         color="green",size=1.5,aes(fill="USGS gage station"))+
+                 scale_fill_discrete(name="")+
+                 labs(title="NWIS Gage Locations in Nebraska",
+                                   subtitle="Nancy Bao",
+                      caption="NE counties are outlined in black.")+
+                theme(plot.title = element_text(hjust = 0.5),
+                              plot.subtitle = element_text(hjust = 0.5))
+print(gage_county_map)
 ```
 
 
@@ -220,13 +255,39 @@ Now let's zoom into a particular county and examine the gages located there.
 
 ```{r}
 #22 Select the county
-
+#I used the UTM transformed datasets 
+Lancaster_co_sf_utm<- NE_counties_sf_utm %>%
+                    filter(NAME=="Lancaster")
 
 #23 Select gages within the selected county
-
+selected_gages_sf_utm<- nwis_gage_location_sf_utm[Lancaster_co_sf_utm,]
+#I used the matrix subsetting to get the gage locations within Lancaster Co. 
 
 #24 Plot
+#I used the UTM transformed datasets to plot
+Lancaster_plot <- ggplot()+
+                  geom_sf(data=NE_counties_sf_utm,
+                          fill="light blue",alpha=0.5)+
+                  geom_sf(data=Lancaster_co_sf_utm,
+                          fill="orange",aes(color="NAME"))+
+                  scale_color_discrete(name = NULL, 
+                                       labels = c("Lancaster County"))+
+                  geom_sf(data=selected_gages_sf_utm,
+                          aes(fill='station_nm'),size=0.5, alpha=0.7)+
+                  scale_fill_discrete(name = NULL, labels = c("USGS gage station"))+
+                 labs(title="NWIS Gage Locations in Nebraska",
+                                   subtitle="Nancy Bao",
+                      caption="All county borders in Nebraska are outlined in gray and filled in light blue except Lancaster County, which is outlined in pink and filled in orange.")+
+                              theme(plot.title = element_text(hjust = 0.5),
+                              plot.subtitle = element_text(hjust = 0.5),
+                              plot.caption=element_text(hjust=0.25))
+print(Lancaster_plot)
+#I layered each sf dataframe to show all the NE counties, 
+# distinguish Lancaster Co., and show the gages within Lancaster Co. 
 
+#I used scale_color_discrete and scale_fill_discrete to rename the legends 
+#to show Lancaster Co. and the gage stations in that county. 
 
-
+#I adjusted the labels so that they would be centered and
+#I added a caption to the bottom of the graph to explain what the blue blocks mean. 
 ```
