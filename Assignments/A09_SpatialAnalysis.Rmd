@@ -1,6 +1,6 @@
 ---
 title: "Assignment 9: Spatial Analysis in R"
-author: "Student Name"
+author: "Nancy Bao"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -29,12 +29,15 @@ This exercise accompanies the lessons in Environmental Data Analytics (ENV872L) 
 2. Import libraries: tidyverse, sf, leaflet, and mapview
 
 ```{r Prepare workspace}
-#1.
+#1. Check working directory
+getwd()
 
-
-#2. 
-
-
+#2. Import libraries
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(mapview)
+library(RColorBrewer)
 ```
 
 ### Read (and filter) county features into an sf dataframe and plot
@@ -47,19 +50,21 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 
 ```{r Read the county data into an sf dataframe}
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
-
+NE_counties_sf <- st_read("./Data/Spatial/cb_2018_us_county_20m.shp") %>%
+                  filter(STATEFP == 31)
 
 #4. Reveal the CRS of the counties features
-
+st_crs(NE_counties_sf)
+st_crs(NE_counties_sf)$epsg
+#The CRS is NAD83 (North American Datum 1983); epsg code: 4269
 
 #5. Plot the data
-
+mapview(NE_counties_sf, zcol ="AWATER")
 ```
 
 6. What is the EPSG code of the Counties dataset? Is this a geographic or a projected coordinate reference system? (Or, does this CRS use angular or planar coordinate units?) To what datum is this CRS associated? (Tip: look the EPSG code on <https://spatialreference.org>) 
 
-> ANSWER: 
-> 
+> ANSWER: The EPSG code of the Counties dataset is 4269. This is a geographic coordinate reference system. This CRS uses angular coordinate units (longitude/latitude). The CRS is associated with the North American Datum 1983. 
 
 
 ### Read in gage locations csv as a dataframe, then display the column names it contains
@@ -72,17 +77,16 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
-
+usgs_gage_locations <-read.csv("./Data/Raw/NWIS_SiteInfo_NE_RAW.csv")
 
 #8. Reveal the names of the columns
-
+colnames(usgs_gage_locations)
 
 ```
 
 9. What columns in the dataset contain the x and y coordinate values, respectively?  
-> ANSWER:
+> ANSWER: The x coordinate values are in the dec_long_va column. The y coordinate values are in the dec_lat_va column. 
 > 
-
 
 ### Convert the dataframe to a spatial features ("sf") dataframe
 
@@ -93,16 +97,18 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Convert dataframe to sf dataframe}
 #10. Convert to an sf object
-
+usgs_gage_sf<- st_as_sf(usgs_gage_locations,
+                          coords = c('dec_long_va','dec_lat_va'),
+                          crs=4269)
 
 #11. Re-examine the column names
-
+colnames(usgs_gage_sf)
 
 ```
 
 12. What new field(s) appear in the sf dataframe created? What field(s), if any, disappeared?
 
->ANSWER: 
+>ANSWER: The new field that appeared in the sf dataframe was the "geometry" column. The fields that disappeared included "dec_lat_va" and "dec_long_va".
 >
 
 
@@ -115,8 +121,20 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Plot the spatial features}
 #13. Plot the gage locations atop the county features
-
-
+NWIS_Gage_Location_NE_plot<- ggplot()+
+                              geom_sf(data= NE_counties_sf,fill="orange",alpha=0.5) + 
+                              geom_sf(data= usgs_gage_sf,color="blue", alpha=0.7)+
+                              labs(title="NWIS Gage Locations in Nebraska",
+                                   subtitle="Nancy Bao",
+                                   caption="Blue dots represent USGS gages. County borders are outlined in gray.")+
+                              theme(plot.title = element_text(hjust = 0.5),
+                              plot.subtitle = element_text(hjust = 0.5),
+                              plot.caption=element_text(hjust=0.25))+
+                              theme(legend.position = "none")
+print(NWIS_Gage_Location_NE_plot)
+# I manually picked orange for the county layer and blue for the gage locations.
+#I used labs(title="",subtitle="",caption="") to label the map.
+#I added a caption to describe the colors and markers. 
 ```
 
 
@@ -134,19 +152,21 @@ Lastly, we want to attach some gage height data to our site locations. I've cons
 
 ```{r}
 #14. Read the site flow data into a data frame
-
+nwis_site_flow <-read.csv("./Data/Raw/NWIS_SiteFlowData_NE_RAW.csv")
 
 #15. Show the column names
-
+colnames(nwis_site_flow)
 
 #16. Join location data to it
-
+site_flow_location_join<-usgs_gage_sf %>%
+              inner_join(nwis_site_flow, by=c('station_nm','site_no'))
+#I did an inner_join, so results only had spatial features where both tables have data
 
 #17. Show the column names of the joined dataset
-
+colnames(site_flow_location_join)
 
 #18. Show the dimensions of this joined dataset
-
+dim(site_flow_location_join)
 
 ```
 
