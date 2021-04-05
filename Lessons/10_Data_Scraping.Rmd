@@ -139,7 +139,6 @@ df_withdrawals <- data.frame("Month" = rep(1:12),
                              "Year" = rep(2000,12),
                              "Avg_Withdrawals_mgd" = as.numeric(avg_withdrawals),
                              "Max_Withdrawals_mgd" = as.numeric(max_withdrawals))
-
 #Modify the dataframe to include the facility name and type as well as the date (as date object)
 df_withdrawals <- df_withdrawals %>% 
   mutate(Registrant = !!the_registrant,
