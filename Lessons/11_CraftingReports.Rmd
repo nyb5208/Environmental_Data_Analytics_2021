@@ -1,10 +1,14 @@
 ---
 title: '11: Crafting Reports'
-author: Environmental Data Analytics | John Fay & Luana Lima | Developed by Kateri Salk
+author: "Nancy Bao"
 date: "Spring 2021"
 output:
- pdf_document: default
-
+  pdf_document: default
+  html_document:
+    df_print: paged
+subtitle: ' Environmental Data Analytics | John Fay & Luana Lima | Developed by Kateri
+  Salk'
+geometry: margin= 2.54cm
 ---
 
 ## LESSON OBJECTIVES
@@ -42,8 +46,8 @@ Lastly, this [website](https://rmarkdown.rstudio.com) give a great & thorough ov
 
 
 ## THE KNITTING PROCESS
+![knitting](../lessons/img/rmarkdownflow.png)
 -   The knitting sequence
-    ![knitting](../lessons/img/rmarkdownflow.png)
 
 * Knitting commands in code chunks:
  - `include = FALSE` - code is run, but neither code nor results appear in knitted file
@@ -65,27 +69,86 @@ See: <https://rmarkdown.rstudio.com> and class recording.
 
 <Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).> 
 
+- ***concise in keeping code and report together***
+- ***easy for creating data visualization***
+- ***generates professional deliverable***
 
 ## TEXT EDITING CHALLENGE
 
 Create a table below that details the example datasets we have been using in class. The first column should contain the names of the datasets and the second column should include some relevant information about the datasets. (Hint: use the cheat sheets to figure out how to make a table in Rmd)
 
+### Table 1. Data set Descriptions 
 
+Data Set                        | Description of data set 
+------------------------------- | ------------------------------------------------------
+CDC Social Vulnerability Index  | 2018 North Carolina county level data collected from
+|                               | the CDC Agency for Toxic Substances and Disease 
+|                               | Registry
+------------------------------- | ------------------------------------------------------
+ECOTOX Neonicotinoids           | Neonicotinoids and insect effects data collected 
+|                               | from the US EPA ECOTOX Knowledgebase
+------------------------------- | ------------------------------------------------------
+EPA Air Quality                 | Air quality data from EPA monitoring sites in North 
+|                               | Carolina measuring PM2.5 and ozone from 2017 to 2018
+------------------------------- | ------------------------------------------------------
+NEON Niwot Ridge litter         | Small woody debris and litter data collected from
+|                               | 2016 to 2019 at the Niwot Ridge Long-Term Ecological
+|                               | Research (LTER) station
+------------------------------- | ------------------------------------------------------
+NTL-LTER Lake Datasets          | Data collected from lakes in the North Temperate 
+|                               | Lakes District in Wisconsin, USA from 1984 to 2016
+------------------------------- | ------------------------------------------------------
+USGS Streamflow data for site   | Streamflow data from the Eno River, NC streamflow
+02085000                        | gage site 02085000 in North Carolina collected from
+|                               | 1928-01-01 and 2019-12-26.
 ## R CHUNK EDITING CHALLENGE
 
 ### Installing packages
 
 Create an R chunk below that installs the package `knitr`. Instead of commenting out the code, customize the chunk options such that the code is not evaluated (i.e., not run).
-
+```{r knitr.package, eval = FALSE}
+install.packages("knitr")
+```
 
 ### Setup
-
 Create an R chunk below called "setup" that checks your working directory, loads the packages `tidyverse`, `lubridate`, and `knitr`, and sets a ggplot theme. Remember that you need to disable R throwing a message, which contains a check mark that cannot be knitted.
 
+```{r setup, message = FALSE, warning= FALSE}
+#Check working directory
+getwd()
+
+#Load libraries
+library(tidyverse)
+library(lubridate)
+library(knitr)
+library(RColorBrewer) #loaded for more color palettes for the plots-used Dark2 palette
+library(kableExtra)
+#I used the URL below to read about kableExtra for:
+#formatting my tables for the Data Exploration, Wrangling, Visualization section
+#https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html
+#Set a ggplot theme 
+A11_theme <-theme_bw(base_size=14)+
+            theme(legend.position = "top", 
+            legend.justification = "center",
+            legend.text = element_text(size = 14,color = "black"),
+            legend.title = element_text(size = 14,color = "black",
+                                        face= "bold"),
+            plot.title = element_text(hjust = 0.5,size=14))
+theme_set(A11_theme)
+```
 Load the NTL-LTER_Lake_Nutrients_Raw dataset, display the head of the dataset, and set the date column to a date format.
 
 Customize the chunk options such that the code is run but is not displayed in the final document.
-
+```{r load.NTL.LTER.data, include=FALSE}
+#Load the NTL-LTER_Lake_Nutrients_Raw dataset
+NTL_nutrients<-read.csv("./Data/Raw/NTL-LTER_Lake_Nutrients_Raw.csv",
+                        stringsAsFactors = TRUE)
+#Display head of the dataset
+head(NTL_nutrients)
+#Set the date column to a date format
+NTL_nutrients$sampledate<-as.Date(NTL_nutrients$sampledate, 
+                                            format = "%m/%d/%y")
+```
 
 ### Data Exploration, Wrangling, and Visualization
 
@@ -94,18 +157,90 @@ Create an R chunk below to create a processed dataset do the following operation
 -   Include all columns except lakeid, depth_id, and comments
 -   Include only surface samples (depth = 0 m)
 -   Drop rows with missing data
+```{r}
+#Create processed dataset for NTL-LTER_Lake_Nutrients_Raw dataset
+NTL_nutrients_processed <- NTL_nutrients %>%
+                            select(lakename:sampledate,depth:po4) %>%
+                            filter(depth == 0) %>% 
+                            drop_na()
+```
 
 Create a second R chunk to create a summary dataset with the mean, minimum, maximum, and standard deviation of total nitrogen concentrations for each lake. Create a second summary dataset that is identical except that it evaluates total phosphorus. Customize the chunk options such that the code is run but not displayed in the final document.
 
-Create a third R chunk that uses the function `kable` in the knitr package to display two tables: one for the summary dataframe for total N and one for the summary dataframe of total P. Use the `caption = " "` code within that function to title your tables. Customize the chunk options such that the final table is displayed but not the code used to generate the table.
+```{r TotN.and.P.summary, include=FALSE, warning= FALSE}
+#Summary dataset for total nitrogen concentrations for each lake
+NTL_nitrogen_summary <- NTL_nutrients_processed %>%
+                         group_by(lakename) %>%
+                         summarise(mean_TotN = mean(tn_ug),
+                                   sd_TotN = sd(tn_ug),
+                                   min_TotN = min(tn_ug),
+                                   max_TotN = max(tn_ug))
+#Summary dataset for total phosphorus concentrations for each lake
+NTL_phosphorus_summary <- NTL_nutrients_processed %>%
+                         group_by(lakename) %>%
+                         summarise(mean_TotP = mean(tp_ug),
+                                   sd_TotP = sd(tp_ug),
+                                   min_TotP = min(tp_ug),
+                                   max_TotP = max(tp_ug))
+```
+
+Create a third R chunk that uses the function `kable` in the knitr package to display two tables: one for the summary dataframe for total N and one for the summary dataframe of total P. Use the `caption = " "` code within that function to title your tables. Customize the chunk 
+options such that the final table is displayed but not the code used to generate the table.
+
+```{r NandP.tbls,echo=FALSE, warning = FALSE, fig.align='left'}
+#Summary Table for Total Nitrogen
+summary.TotN.table<-kbl(NTL_nitrogen_summary, booktabs=T,
+                        caption = "Descriptive Statistics for Total Nitrogen Concentrations in the Lakes at the North Temperate Lakes Long Term Ecological Research Site",
+                         col.names =c("Lake name", "Mean (ug/L)","Standard Deviation (ug/L)",
+                                    "Minimum (ug/L)","Maximum (ug/L)")) %>%
+  kable_styling(latex_options = c("basic", "hold_position"),
+                full_width = F)
+summary.TotN.table
+#Summary Table for Total Phosphorus
+summary.TotP.table<-kbl(NTL_phosphorus_summary, booktabs = T,
+                      caption="Descriptive Statistics for Total Phosphorus Concentrations in the Lakes at the North Temperate Lakes Long Term Ecological Research Site",
+                      col.names = c("Lake name","Mean (ug/L)","Standard Deviation (ug/L)",
+                                    "Minimum (ug/L)","Maximum (ug/L)"))%>%
+                       kable_styling(latex_options = c("basic", "hold_position"),
+                      full_width = F)
+summary.TotP.table 
+```
 
 Create a fourth and fifth R chunk that generates two plots (one in each chunk): one for total N over time with different colors for each lake, and one with the same setup but for total P. Decide which geom option will be appropriate for your purpose, and select a color palette that is visually pleasing and accessible. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, customize the chunk options such that the figures are aligned on the left side of the page. Lastly, add a fig.cap chunk option to add a caption (title) to your plot that will display underneath the figure.
 
+```{r totalN.plot, echo = FALSE, fig.align = 'left', fig.cap="Total nitrogen surface (depth=0m) concentrations in lakes at the North Temperate Lakes Long Term Ecological Research Site", fig.height = 8, fig.width = 10, warning = FALSE, fig.pos='H'}
+NTL_totN_plot <-ggplot(NTL_nutrients_processed,aes(x = sampledate, 
+                                  y = tn_ug, color=lakename))+
+                        geom_line() +
+                        labs(y="Total Nitrogen (ug/L)",
+                             x="Date",color= "Lake name")+
+  scale_x_date(date_breaks = "5 months",date_labels = "%b %Y")+
+  theme(axis.text.x=element_text(angle=90, hjust=1))+
+  scale_color_brewer(palette = "Dark2")
+print(NTL_totN_plot)
+```
+
+
+```{r totalP.plot, echo = FALSE, fig.align= 'left', fig.cap ="Total phosphorus surface (depth=0m) concentrations in lakes at the North Temperate Lakes Long Term Ecological Research Site", fig.height = 8, fig.width = 10, warning = FALSE,fig.pos='H'}
+NTL_totP_plot <- ggplot(NTL_nutrients_processed,aes(x = sampledate, 
+                                  y = tp_ug, color=lakename))+
+                        geom_line() +
+                        labs(y="Total Phosphorus (ug/L)",
+                             x="Date", color= "Lake name")+
+  scale_x_date(date_breaks = "5 months",date_labels = "%b %Y")+
+  theme(axis.text.x=element_text(angle=90, hjust=1))+
+  scale_color_brewer(palette = "Dark2")
+print(NTL_totP_plot)
+```
 
 ### Communicating results
-
 Write a paragraph describing your findings from the R coding challenge above. This should be geared toward an educated audience but one that is not necessarily familiar with the dataset. Then insert a horizontal rule below the paragraph. Below the horizontal rule, write another paragraph describing the next steps you might take in analyzing this dataset. What questions might you be able to answer, and what analyses would you conduct to answer those questions?
 
+> As shown in Figure 1 and 2 respectively, total nitrogen and total phosphorus concentrations were measured and collected across eight lakes from the North Temperate Lakes Long Term Ecological Research Site in Wisconsin, USA from May 1991 to August 1999. The following lakes were measured for their total nitrogen and total phosphorus nutrient concentrations in micrograms per liter: Central Long Lake, Crampton Lake, East Long Lake, Hummingbird Lake, Paul Lake, Peter Lake, Tuesday Lake, and West Long Lake.These nutrient concentrations (ug/L) are measured from the surface depth of each lake (depth=0m). In figure 1, the total nitrogen concentrations follow a seasonal pattern where concentrations peak during the late spring to mid-summer months and decrease during the late fall to winter months. In figure 2, the total phosphorus concentrations also a follow a seasonal pattern, where phosphorus concentrations peak in the summer to fall months. Of the eight lakes,total phosphorus and total nitrogen concentration measurements for East Long Lake across 1991 to 1999 are greater than that of the other lakes (Figs. 1 and 2). The nutrient concentrations for Peter Lake and Tuesday Lake do not greatly fluctuate from 1991 to 1999, but nutrient concentrations increased from May 1996 to March 1997 and decreased from May 1997 to August 1998 for East Long Lake, Peter Lake, and West Long Lake (Figs. 1 and 2). For the overall averages for total nitrogen concentration, Hummingbird Lake had the highest value at 1037 ug/L (Table 2) and for the overall averages for total phosphorus concentration, Hummingbird Lake had the highest value at 36.2 ug/L (Table 3). 
+
+------------------------------------------------------------------------------------------------------------
+
+>This dataset can be used to assess the impacts of nutrient pollution from upstream nonpoint runoff sources such as agricultural fertilizer and pesticide runoff surrounding Wisconsin from 1991 to 1999. The dataset can be used to explore research questions such as: "How the total phosphorus and nitrogen concentrations vary within a lake and between other lakes?" and "What factors change nitrogen and phosphorus concentrations in these lakes?" To elucidate the legacy effects of the nutrient effluent time series analyses can be conducted on each lake to assess trends across 1991 and 1999 and multiple linear regression analyses can be conducted to assess factors that are associated with total nitrogen and phosphorus lake concentrations. Furthermore, nitrogen nutrient concentrations can be further divided into the concentrations of nitrate versus ammonium to compare distribution of nitrogen forms in each lake. Others may be interested in looking at nutrient concentrations across varying depths in each of the lakes, in which including additional data such as water depths and other aspects such as seasonality may be included for further analyses on the effects of nutrient pollution within a lake and across different lakes. 
 
 ## KNIT YOUR PDF
 When you have completed the above steps, try knitting your PDF to see if all of the formatting options you specified turned out as planned. This may take some troubleshooting.
@@ -115,7 +250,6 @@ When you have completed the above steps, try knitting your PDF to see if all of 
 We have covered the basics in class today, but R Markdown offers many customization options. A word of caution: customizing templates will often require more interaction with LaTeX and installations on your computer, so be ready to troubleshoot issues.
 
 Customization options for pdf output include: 
-
 * Table of contents
 * Number sections
 * Control default size of figures
